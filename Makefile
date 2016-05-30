@@ -2,7 +2,11 @@ TEMPORARY_FOLDER?=/tmp/SwiftLint.dst
 PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
 
-XCODEFLAGS=-xcconfig settings-for-all-projects.xcconfig -workspace 'SwiftLint.xcworkspace' -scheme 'swiftlint' DSTROOT=$(TEMPORARY_FOLDER)
+XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
+	-scheme 'swiftlint' \
+	DSTROOT=$(TEMPORARY_FOLDER) \
+	EMBEDDED_CONTENT_CONTAINS_SWIFT=NO \
+	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework
@@ -48,6 +52,11 @@ uninstall:
 
 installables: clean bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) install
+	xcrun swift-stdlib-tool --copy \
+		--scan-executable "$(SWIFTLINT_EXECUTABLE)" \
+		--scan-folder "$(SWIFTLINTFRAMEWORK_BUNDLE)" \
+		--platform macosx --destination "$(SWIFTLINTFRAMEWORK_BUNDLE)/Versions/Current/Frameworks" \
+		--strip-bitcode
 
 	mkdir -p "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	mv -f "$(SWIFTLINTFRAMEWORK_BUNDLE)" "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
