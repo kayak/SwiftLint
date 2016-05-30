@@ -17,6 +17,9 @@
   but that can change if users request it.  
   [JP Simard](https://github.com/jpsim)
 
+* Reduce size of binary distributions.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * Fix false positive in conditional binding cascade violation.  
