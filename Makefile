@@ -52,6 +52,7 @@ uninstall:
 
 installables: clean bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) install
+	rm -rf "$(SWIFTLINTFRAMEWORK_BUNDLE)/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks"
 	xcrun swift-stdlib-tool --copy \
 		--scan-executable "$(SWIFTLINT_EXECUTABLE)" \
 		--scan-folder "$(SWIFTLINTFRAMEWORK_BUNDLE)" \
